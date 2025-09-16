@@ -3,8 +3,7 @@
 
 from fastapi import APIRouter
 #from ..manager import ConnectionManager
-#from ..database import get_history
-
+from ..database import salvar_mensagem
 router = APIRouter()
 
 @router.get("/")
@@ -19,3 +18,9 @@ async def list_salas():
 @router.get("/histprico/{sala_id}")
 async def history(sala_id: str):
     return {"message": "Aqui teremos o histórico"}
+
+
+@router.get("/teste")
+async def teste():
+    salvar_mensagem(1, "Lary", "oi,oi,oi")
+    return{"message": "Aqui teremos as salas"}
