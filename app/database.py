@@ -10,13 +10,15 @@ usuarios = db["usuarios"]
 
 from datetime import datetime
 
-async def salvar_mensagem(sala_id: str, nickname: str, mensagem: str):
-    await mensagens.insert_one(
+def salvar_mensagem(sala_id: str, nickname: str, mensagem: str):
+    mensagens.insert_one(
 {
     "sala_id": sala_id,
     "nickname": nickname,
-    "menssagem":mensagem,
-    "timestamp": detetime.utcnow()
+    "mensagem":mensagem,
+    "timestamp": datetime.utcnow()
 }
 
     )
+
+    return True
