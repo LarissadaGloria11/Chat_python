@@ -5,10 +5,14 @@ import asyncio
 
 class ConnectionManager:
     def __init__(self):
-        self.salas: Dict[str, Dict[WebSocket, str]]={}
+        self.salas: Dict[str, Dict[WebSocket, str]] = {}
         self.lock: asyncio.Lock()
+        self.lock: asyncio.Lock = asyncio.Lock() # ajuste 
 
-    async def concect(self, sala_id: str, WebSocket: WebSocket, nickname:str):
+    async def connect(self, sala_id: str, websocket: WebSocket, nickname: str):
+        await websocket.accept()
+
+    async def concect(self, sala_id: str, websocket: WebSocket, nickname:str):
         await websocket.accept()
         async with self.lock:
             if sala_id not in self.salas:

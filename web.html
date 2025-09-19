@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat WebSocket</title>
+</head>
+
+<body>
+    <h2>Chat WebSocket</h2>
+
+    <label>
+        Sala: <input type="text" id="sala" value="sala1">
+    </label>
+    <label>
+        Nickname: <input type="text" id="nickname" value="Usuário">
+    </label>
+    <button id="entrar">Entrar</button>
+
+    <br><br>
+
+    <div id="chat"></div>
+    <input type="text" id="mensagem" placeholder="Informe a mensagem para enviar...">
+    <button id="enviar">Enviar</button>
+
+    <br><br>
+
+    <div id="usuarios">
+        Usuários da Sala:
+        <span id="listaDeUsuarios"></span>
+    </div>
+
+    <script>
+        let ws;
+        const chatDiv = document.getElementById("chat");
+        const listaDeUsuariosSpan = document.getElementById("listaDeUsuarios");
+        const salaInput = document.getElementById("sala");
+        const nicknameInput = document.getElementById("nickname");
+        const mensagemInput = document.getElementById("mensagem");
+
+        function adicionarMensagem(msg){
+            const p = document.createElement('p')
+            p.textContent = msg;
+            chatDiv.appendChild(p);
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+
+        document.getElementById("entrar").onclick = () => {
+            const sala = salaInput.value;
+            const nickname = nicknameInput.value;
+            ws = new WebSocket(`ws://127.0.0.1:8001/ws/${sala}?nickname=${nickname}`);
+            ws.onopen = () => adicionarMensagem("Conectado á sala " + sala);
+
+            ws.onmessage = (event) => {
+                const msg  = event.data;
+                adicionarMensagem(msg);
+                if(msg.startsWith("[sistema] Usuários")){
+                    listaDeUsuariosSpan.textContent = msg.replace('[sistema] Usuários na sala' + sala + ": ", "");
+                }
+            };
+
+            ws.onclose = () => adicionarMensagem("Desconectado");
+
+
+        };
+
+       
+        document.getElementById("enviar").onclick = () =>{
+            if (ws && ws.readyState === WebSocket.OPEN){
+                const msg = mensagemInput.value;
+                ws.send(msg);
+                mensagemInput.value = '';
+            }
+            
+        }
+ 
+
+
+    </script>
+
+</body>
+
+</html>
